@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { RouteComponentProps } from '@reach/router';
 import { Button } from '@material-ui/core';
 
 import firebase from '../external/Firebase';
+import UserContext from '../context/User';
 
 const Login = (_props: RouteComponentProps) => {
-  const [state, setState] = useState<any>(null);
+  const { user, setUser } = useContext<any>(UserContext);
 
   function signInWithGoogle(e: MouseEvent) {
     e.preventDefault();
@@ -13,30 +14,27 @@ const Login = (_props: RouteComponentProps) => {
     firebase
       .auth()
       .signInWithPopup(provider)
-      .then(function (result) {
-        // var token = result.credential.accessToken;
-        // var user = result.user;
-        setState(result);
+      .then(function (result: any) {
+        setUser(result);
       })
-      .catch(function (error) {
-        // var errorCode = error.code;
-        // var errorMessage = error.message;
-        // var email = error.email;
-        // var credential = error.credential;
-        setState(error);
+      .catch(function (error: any) {
+        console.error(error);
       });
   }
 
   return (
     <div>
-      <Button
-        variant='contained'
-        color='primary'
-        onClick={(event: any) => signInWithGoogle(event)}
-      >
-        login with google
-      </Button>
-      <div>{state && JSON.stringify(state)}</div>
+      {!user ? (
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={(event: any) => signInWithGoogle(event)}
+        >
+          login with google
+        </Button>
+      ) : (
+        JSON.stringify(user)
+      )}
     </div>
   );
 };

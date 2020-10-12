@@ -1,41 +1,49 @@
-import React, { useContext } from 'react';
-import { RouteComponentProps } from '@reach/router';
+import React, { useContext, useEffect } from 'react';
+import { navigate, RouteComponentProps } from '@reach/router';
 import { Button } from '@material-ui/core';
 
-import firebase from '../external/Firebase';
-import UserContext from '../context/User';
+import firebase from '../Firebase';
+import { Layout } from '../components';
+import { AuthContext } from '../context/Auth';
 
 const Login = (_props: RouteComponentProps) => {
-  const { user, setUser } = useContext<any>(UserContext);
+  const { currentUser } = useContext(AuthContext);
 
-  function signInWithGoogle(e: MouseEvent) {
+  useEffect(() => {
+    if (!!currentUser) {
+      navigate('/');
+    }
+  }, [currentUser]);
+
+  function handleLogin(e: MouseEvent) {
     e.preventDefault();
-    const provider = new firebase.auth.GoogleAuthProvider();
     firebase
       .auth()
-      .signInWithPopup(provider)
-      .then(function (result: any) {
-        setUser(result);
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(function () {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        return firebase.auth().signInWithRedirect(provider);
       })
-      .catch(function (error: any) {
+      .catch(function (error) {
         console.error(error);
+        return null;
       });
   }
 
   return (
-    <div>
-      {!user ? (
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={(event: any) => signInWithGoogle(event)}
-        >
-          login with google
-        </Button>
-      ) : (
-        JSON.stringify(user)
-      )}
-    </div>
+    <>
+      <Layout>
+        <div>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={(event: any) => handleLogin(event)}
+          >
+            Login with Google
+          </Button>
+        </div>
+      </Layout>
+    </>
   );
 };
 

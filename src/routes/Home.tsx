@@ -1,11 +1,26 @@
-import React, { useContext } from 'react';
-import { RouteComponentProps } from '@reach/router';
-import UserContext from '../context/User';
+import React, { useContext, useEffect } from 'react';
+import { navigate, RouteComponentProps } from '@reach/router';
+
+import { Layout } from '../components';
+
+import { AuthContext } from '../context/Auth';
 
 const Home = (_props: RouteComponentProps) => {
-  const { user } = useContext<any>(UserContext);
+  const { currentUser } = useContext(AuthContext);
 
-  return <div>{user && JSON.stringify(user)}</div>;
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/login');
+    }
+  }, [currentUser]);
+
+  return (
+    <>
+      <Layout>
+        <div>Home</div>
+      </Layout>
+    </>
+  );
 };
 
 export default Home;

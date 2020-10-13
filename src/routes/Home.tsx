@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { navigate, RouteComponentProps } from '@reach/router';
 
-import { Layout } from '../components';
+import { Layout, PrivateRoute, Test } from '../components';
 
 import { AuthContext } from '../context/Auth';
 
@@ -16,9 +16,18 @@ const Home = (_props: RouteComponentProps) => {
 
   return (
     <>
-      <Layout>
-        <div>Home</div>
-      </Layout>
+      <PrivateRoute>
+        <Layout>
+          {currentUser && (
+            <img
+              src={currentUser.photoURL}
+              alt={`${currentUser.displayName}`}
+            />
+          )}
+          <div>Home</div>
+          <Test />
+        </Layout>
+      </PrivateRoute>
     </>
   );
 };

@@ -5,12 +5,14 @@ import { Button } from '@material-ui/core';
 import firebase from '../Firebase';
 import { Layout } from '../components';
 import { AuthContext } from '../context/Auth';
+import { updateUserBlockTimeStamp } from '../util';
 
 const Login = (_props: RouteComponentProps) => {
   const { currentUser } = useContext(AuthContext);
 
   useEffect(() => {
     if (!!currentUser) {
+      updateUserBlockTimeStamp(currentUser);
       navigate('/');
     }
   }, [currentUser]);
@@ -20,16 +22,15 @@ const Login = (_props: RouteComponentProps) => {
     firebase
       .auth()
       .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      .then(function () {
+      .then(() => {
         var provider = new firebase.auth.GoogleAuthProvider();
-        return firebase.auth().signInWithRedirect(provider);
+        firebase.auth().signInWithRedirect(provider);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.error(error);
         return null;
       });
   }
-
   return (
     <>
       <Layout>

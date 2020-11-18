@@ -7,17 +7,20 @@ import Login from './routes/Login';
 import NotFound from './routes/NotFound';
 
 import { AuthProvider } from './context/Auth';
+import Theme from './Theme';
 
 const App = () => {
   return (
     <div className="react-app">
-      <AuthProvider>
-        <Router>
-          <Home path="/" />
-          <Login path="/login" />
-          <NotFound default />
-        </Router>
-      </AuthProvider>
+      <Theme>
+        <AuthProvider>
+          <Router>
+            <Home path="/" />
+            <Login path="/login" />
+            <NotFound default />
+          </Router>
+        </AuthProvider>
+      </Theme>
     </div>
   );
 };
